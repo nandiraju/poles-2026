@@ -1,48 +1,290 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Video with Sound Toggle</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-html,body{
-  margin:0;
-  height:100%;
-  overflow:hidden;
-}
-video{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-button{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  z-index:10;
-  padding:10px 16px;
-  font-size:14px;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POLES 2026 | Precision Oncology Leadership Summit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #030712;
+      --text-color: #f8fafc;
+      --accent-color: #3b82f6;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --footer-bg: rgba(3, 7, 18, 0.8);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f8fafc;
+      --text-color: #030712;
+      --accent-color: #2563eb;
+      --glass-bg: rgba(0, 0, 0, 0.05);
+      --glass-border: rgba(0, 0, 0, 0.1);
+      --footer-bg: rgba(248, 250, 252, 0.8);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: var(--transition);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #bgVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 1;
+      transition: var(--transition);
+    }
+
+    [data-theme="light"] #bgVideo {
+      opacity: 0.4;
+      filter: grayscale(100%) brightness(1.4);
+    }
+
+
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 2rem;
+      display: flex;
+      justify-content: flex-end;
+      z-index: 100;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+    }
+
+    button {
+      padding: 0.8rem 1.5rem;
+      border-radius: 9999px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      color: var(--text-color);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    button:hover {
+      background: var(--glass-border);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      z-index: 1;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      animation: fadeInScale 1s ease-out;
+    }
+
+
+
+    h1 {
+      font-size: clamp(3rem, 10vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #60a5fa, #3b82f6, #2563eb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+    }
+
+    .tagline {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      font-weight: 300;
+      opacity: 0.8;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .details {
+      font-size: 1.2rem;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(8px);
+      display: inline-block;
+    }
+
+    footer {
+      padding: 1.5rem;
+      text-align: center;
+      z-index: 10;
+      background: var(--footer-bg);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--glass-border);
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+    }
+
+    footer a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    footer a:hover {
+      opacity: 0.7;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Dark/Light Icons */
+    .sun-icon,
+    .moon-icon {
+      display: none;
+    }
+
+    [data-theme="light"] .moon-icon {
+      display: block;
+    }
+
+    [data-theme="dark"] .sun-icon {
+      display: block;
+    }
+
+    /* Default show sun if no attribute */
+    html:not([data-theme]) .sun-icon {
+      display: block;
+    }
+  </style>
 </head>
-<body>
 
-<video id="bgVideo" autoplay muted loop playsinline>
-  <source src="video.mp4" type="video/mp4">
-</video>
+<body data-theme="dark">
 
-<button onclick="enableSound()">🔊 Enable Sound</button>
+  <video id="bgVideo" autoplay muted loop playsinline>
+    <source src="video.mp4" type="video/mp4">
+  </video>
 
-<script>
-function enableSound(){
-  const v = document.getElementById('bgVideo');
-  v.muted = false;
-  v.volume = 1;
-  v.play();
-}
-</script>
+
+
+  <header>
+    <div class="controls">
+      <button id="themeToggle" onclick="toggleTheme()">
+        <span class="sun-icon">☀️ Light Mode</span>
+        <span class="moon-icon">🌙 Dark Mode</span>
+      </button>
+      <button id="soundToggle" onclick="enableSound()">
+        <span id="soundIcon">🔇</span> <span id="soundText">Enable Sound</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero-content">
+      <h1>POLES 2026</h1>
+      <p class="tagline">Precision Oncology Leadership Summit</p>
+      <div class="details">
+        April 4-5, 2026 • Mumbai, India
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 POLES Summit • <a href="https://www.1cell.ai" target="_blank">www.1cell.ai</a></p>
+  </footer>
+
+  <script>
+    function enableSound() {
+      const v = document.getElementById('bgVideo');
+      const soundText = document.getElementById('soundText');
+      const soundIcon = document.getElementById('soundIcon');
+
+      if (v.muted) {
+        v.muted = false;
+        v.volume = 1;
+        v.play();
+        soundText.textContent = "Disable Sound";
+        soundIcon.textContent = "🔊";
+      } else {
+        v.muted = true;
+        soundText.textContent = "Enable Sound";
+        soundIcon.textContent = "🔇";
+      }
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const body = document.body;
+      const currentTheme = body.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+
+    // Set normal playback
+    const v = document.getElementById('bgVideo');
+    if (v) {
+      v.playbackRate = 1.0;
+    }
+  </script>
 
 </body>
+
 </html>
